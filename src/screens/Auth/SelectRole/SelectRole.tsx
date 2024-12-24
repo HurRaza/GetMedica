@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import RootStack from './src/navigators/RootStack'
 
-const App = () => {
+const SelectRole = () => {
   return (
-    <RootStack/>
+    <View>
+      <Text>SelectRole</Text>
+    </View>
   )
 }
 
-export default App
+export default SelectRole
 
 const styles = StyleSheet.create({})
