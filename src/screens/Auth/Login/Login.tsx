@@ -11,12 +11,18 @@ import {CustomButton} from '../../../components/common/CustomButton';
 import CustomRHFTextInput from '../../../components/common/CustomRHFTextInput';
 import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {loginWithFirebase} from '../../../services/auth';
 
 const Login = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Login'>>();
   const {control, handleSubmit} = useForm({
     // defaultValues: {email: 'hhhh@yopmail.com', password: 'Karachi123+'},
   });
+
+  const LoginHandler = async (data: any) => {
+    data.role = params?.role;
+    loginWithFirebase(data);
+  };
   return (
     <CustomWrapper keybaordAvoidingView>
       <SimpleHeader>
@@ -49,6 +55,9 @@ const Login = () => {
               placeholder="Enter Password"
               requiredStar
               control={control}
+              rules={{
+                required: 'Password is required',
+              }}
               name="password"
               title="Password"
             />
@@ -66,22 +75,22 @@ const Login = () => {
           <CustomButton
             // loading={isPending}
             title={'Continue'}
-            // onPress={handleSubmit(onSubmit)}
-            onPress={() => {}}
+            onPress={handleSubmit(LoginHandler)}
           />
           <CustomText
             center
             textStyle={styles.subTitleText}
             fontWeight="400"
-            fontSize='S14'
-            color={COLORS.NeutralGrey80}
+            fontSize="S14"
+            color={COLORS.NeutralGrey60}
             children={
               <>
                 Don’t have an account?
                 <CustomText
                   underline
                   onPress={() => navigate('Signup', {role: params?.role})}
-                  fontWeight="500"
+                  fontWeight="600"
+                  fontSize="S14"
                   children=" SignUp"
                   color={COLORS.primary}
                 />

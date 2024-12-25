@@ -84,7 +84,7 @@ const CustomDropDown: FC<Props> = ({
         renderItem={item => {
           return (
             <View style={styles.dropDownItem}>
-              <CustomText>{item?.label}</CustomText>
+              <CustomText fontSize='S13'>{item?.label}</CustomText>
             </View>
           );
         }}

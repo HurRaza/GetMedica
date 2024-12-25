@@ -13,12 +13,17 @@ import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import CustomRHFDropDown from '../../../components/common/CustomRHFDropDown/CustomRHFDropDown';
 import {TYPEOFSPECIALIZATION} from '../../../utils/constants';
+import {signupWithFirebase} from '../../../services/auth';
 
 const Signup = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Signup'>>();
   const {control, handleSubmit} = useForm({
     // defaultValues: {email: 'hhhh@yopmail.com', password: 'Karachi123+'},
   });
+  const SignupHandler = async (data: any) => {
+    data.role = params?.role;
+    signupWithFirebase(data);
+  };
   return (
     <CustomWrapper keybaordAvoidingView>
       <SimpleHeader>
@@ -78,6 +83,9 @@ const Signup = () => {
               placeholder="Enter Password"
               requiredStar
               control={control}
+              rules={{
+                required: 'Password is required',
+              }}
               name="password"
               title="Password"
             />
@@ -86,22 +94,22 @@ const Signup = () => {
           <CustomButton
             // loading={isPending}
             title={'Continue'}
-            // onPress={handleSubmit(onSubmit)}
-            onPress={() => {}}
+            onPress={handleSubmit(SignupHandler)}
           />
           <CustomText
             center
             textStyle={styles.subTitleText}
             fontSize="S14"
             fontWeight="400"
-            color={COLORS.NeutralGrey80}
+            color={COLORS.NeutralGrey60}
             children={
               <>
                 Already have an account?
                 <CustomText
                   underline
                   onPress={() => navigate('Login', {role: params?.role})}
-                  fontWeight="500"
+                  fontWeight="600"
+                  fontSize="S14"
                   children=" Login"
                   color={COLORS.primary}
                 />

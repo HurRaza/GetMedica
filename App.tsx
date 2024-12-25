@@ -4,7 +4,12 @@ import BootSplash from 'react-native-bootsplash';
 import RootStack from './src/navigators/RootStack';
 import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from './src/utils/navigation';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
+import {toastConfig} from './src/utils/theme';
 
 const App = () => {
   useEffect(() => {
@@ -17,11 +22,17 @@ const App = () => {
       console.log('BootSplash has been hidden successfully');
     });
   }, []);
+
   return (
     <SafeAreaProvider style={{flex: 1}}>
       <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
       <NavigationContainer ref={navigationRef}>
         <RootStack />
+        <Toast
+          // position="bottom"
+          autoHide={true}
+          config={toastConfig(100)}
+        />
       </NavigationContainer>
     </SafeAreaProvider>
   );

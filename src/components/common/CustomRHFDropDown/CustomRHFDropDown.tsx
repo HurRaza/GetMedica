@@ -46,7 +46,7 @@ const CustomRHFDropDown: FC<{
             label={label}
             defaultValue={defaultValue}
             onChangeItem={item => {
-              console.log(item);
+              // console.log(item);
               onChange(item);
               onChangeValue && onChangeValue(item);
             }}
