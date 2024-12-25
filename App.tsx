@@ -1,9 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import BootSplash from 'react-native-bootsplash';
 import RootStack from './src/navigators/RootStack';
 import {NavigationContainer} from '@react-navigation/native';
-import { navigationRef } from './src/utils/navigation';
+import {navigationRef} from './src/utils/navigation';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = () => {
   useEffect(() => {
@@ -17,9 +18,12 @@ const App = () => {
     });
   }, []);
   return (
-    <NavigationContainer ref={navigationRef}>
-      <RootStack />
-    </NavigationContainer>
+    <SafeAreaProvider style={{flex: 1}}>
+      <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
+      <NavigationContainer ref={navigationRef}>
+        <RootStack />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

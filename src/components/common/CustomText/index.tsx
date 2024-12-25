@@ -47,7 +47,6 @@ export const CustomText: React.FC<CustomTextProps> = ({
   textStyle,
   color,
   center,
-
   onPress,
   underline,
   numberOfLines,

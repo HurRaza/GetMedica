@@ -11,9 +11,11 @@ import {CustomButton} from '../../../components/common/CustomButton';
 import CustomRHFTextInput from '../../../components/common/CustomRHFTextInput';
 import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
+import CustomRHFDropDown from '../../../components/common/CustomRHFDropDown/CustomRHFDropDown';
+import {TYPEOFSPECIALIZATION} from '../../../utils/constants';
 
-const Login = () => {
-  const {params} = useRoute<RouteProp<RootStackNavigationType, 'Login'>>();
+const Signup = () => {
+  const {params} = useRoute<RouteProp<RootStackNavigationType, 'Signup'>>();
   const {control, handleSubmit} = useForm({
     // defaultValues: {email: 'hhhh@yopmail.com', password: 'Karachi123+'},
   });
@@ -25,10 +27,20 @@ const Login = () => {
           showsVerticalScrollIndicator={false}>
           <View style={{flex: 1}}>
             <CustomText
-              children={'Log In'}
+              children={'Sign Up'}
               fontSize="S28"
               fontWeight="600"
               textStyle={styles.title}
+            />
+            <CustomRHFTextInput
+              placeholder="Enter Full Name"
+              requiredStar
+              control={control}
+              rules={{
+                required: 'Name is required',
+              }}
+              name="name"
+              title="Name"
             />
             <CustomRHFTextInput
               placeholder="Enter Email Address"
@@ -44,6 +56,23 @@ const Login = () => {
               name="email"
               title="Email"
             />
+            {params?.role == 'doctor' ? (
+              <CustomRHFDropDown
+                name="specialization"
+                label="Specialization"
+                required
+                //   onChangeValue={() => {
+                //     setValue('fieldOfPractice', null);
+                //     // setValue('typeOfPractice');
+                //   }}
+                control={control}
+                rules={{required: 'Specialization is required'}}
+                data={TYPEOFSPECIALIZATION}
+              />
+            ) : (
+              <></>
+            )}
+
             <CustomRHFTextInput
               secureTextEntry
               placeholder="Enter Password"
@@ -51,15 +80,6 @@ const Login = () => {
               control={control}
               name="password"
               title="Password"
-            />
-            <CustomText
-              underline
-              onPress={() => {}}
-              fontSize="S14"
-              fontWeight="600"
-              children="Forgot Password?"
-              color={COLORS.primary}
-              textStyle={styles.forgotPasswordText}
             />
           </View>
 
@@ -72,17 +92,17 @@ const Login = () => {
           <CustomText
             center
             textStyle={styles.subTitleText}
+            fontSize="S14"
             fontWeight="400"
-            fontSize='S14'
             color={COLORS.NeutralGrey80}
             children={
               <>
-                Don’t have an account?
+                Already have an account?
                 <CustomText
                   underline
-                  onPress={() => navigate('Signup', {role: params?.role})}
+                  onPress={() => navigate('Login', {role: params?.role})}
                   fontWeight="500"
-                  children=" SignUp"
+                  children=" Login"
                   color={COLORS.primary}
                 />
               </>
@@ -94,7 +114,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
 
 const styles = StyleSheet.create({
   title: {
