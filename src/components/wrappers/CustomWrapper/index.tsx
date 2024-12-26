@@ -89,6 +89,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingLeft: widthPercentageToDP(5),
+    paddingRight: widthPercentageToDP(5),
     // backgroundColor: COLORS.NeutralGrey0,
   },
 });

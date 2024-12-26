@@ -11,7 +11,7 @@ import {CustomButton} from '../../../components/common/CustomButton';
 import CustomRHFTextInput from '../../../components/common/CustomRHFTextInput';
 import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {loginWithFirebase} from '../../../services/auth';
+import {loginWithFirebase} from '../../../services/api/auth';
 
 const Login = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Login'>>();

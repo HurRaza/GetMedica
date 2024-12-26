@@ -13,7 +13,7 @@ import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import CustomRHFDropDown from '../../../components/common/CustomRHFDropDown/CustomRHFDropDown';
 import {TYPEOFSPECIALIZATION} from '../../../utils/constants';
-import {signupWithFirebase} from '../../../services/auth';
+import {signupWithFirebase} from '../../../services/api/auth';
 
 const Signup = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Signup'>>();

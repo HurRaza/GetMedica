@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingVertical: heightPercentageToDP(1),
-    paddingHorizontal: widthPercentageToDP(5),
   },
   iconContainer: {
     borderWidth: RFValue(1),
@@ -91,7 +90,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    paddingHorizontal: widthPercentageToDP(5),
     paddingBottom: heightPercentageToDP(1),
     // backgroundColor: 'red',
   },
