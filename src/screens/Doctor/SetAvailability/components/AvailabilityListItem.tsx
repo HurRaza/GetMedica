@@ -82,7 +82,7 @@ const AvailabilityListItem: FC<Props> = ({
           })(),
         },
       ];
-      console.log(availabilityRef.current);
+      
     }
   };
   const onTimeConfirm = (
@@ -123,8 +123,6 @@ const AvailabilityListItem: FC<Props> = ({
       ];
     }
   };
-  console.log(timingArray, 'timmingArr');
-  console.log(availabilityRef.current, 'ava');
   return (
     <View style={styles.container}>
       {/* {selectedItem && (

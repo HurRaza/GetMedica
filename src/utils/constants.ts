@@ -16,6 +16,16 @@ export const DaysOfWeek = [
   'Sunday',
 ];
 
+export const DayShortNames: { [key: string]: string } = {
+  'Monday': 'Mon',
+  'Tuesday': 'Tues',
+  'Wednesday': 'Wed',
+  'Thursday': 'Thurs',
+  'Friday': 'Fri',
+  'Saturday': 'Sat',
+  'Sunday': 'Sun'
+};
+
 export const TYPEOFSPECIALIZATION = [
   {
     label: 'Orthopedics',

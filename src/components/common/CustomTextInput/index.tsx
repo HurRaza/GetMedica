@@ -113,6 +113,7 @@ const CustomTextInput: FC<ICustomTextInput> = props => {
               !editable && {
                 color: COLORS.NeutralGrey50,
               },
+              {textAlignVertical:"top"}
             ]}
             numberOfLines={numberOfLines}
             focusable={true}

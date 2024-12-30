@@ -6,7 +6,7 @@ import CustomWrapper from '../../../components/wrappers/CustomWrapper';
 import SimpleHeader from '../../../components/header/SimpleHeader';
 import {CustomText} from '../../../components/common/CustomText';
 import {COLORS} from '../../../utils/theme';
-import {navigate} from '../../../utils/navigation';
+import {navigate, navigateReset} from '../../../utils/navigation';
 import {CustomButton} from '../../../components/common/CustomButton';
 import CustomRHFTextInput from '../../../components/common/CustomRHFTextInput';
 import {useForm} from 'react-hook-form';
@@ -14,16 +14,44 @@ import {heightPercentageToDP} from 'react-native-responsive-screen';
 import CustomRHFDropDown from '../../../components/common/CustomRHFDropDown/CustomRHFDropDown';
 import {TYPEOFSPECIALIZATION} from '../../../utils/constants';
 import {signupWithFirebase} from '../../../services/api/auth';
+import {showToast} from '../../../utils/helpers';
+import {useUserStore} from '../../../services/store/userStore';
 
 const Signup = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Signup'>>();
-  const {control, handleSubmit} = useForm({
-    // defaultValues: {email: 'hhhh@yopmail.com', password: 'Karachi123+'},
-  });
+  const {
+    control,
+    handleSubmit,
+    formState: {isSubmitting, isValid},
+  } = useForm({mode: 'onChange'});
+
   const SignupHandler = async (data: any) => {
     data.role = params?.role;
-    signupWithFirebase(data);
+    const res = await signupWithFirebase(data);
+    if (!res.success) {
+      showToast({
+        type: 'error',
+        message: res.error,
+        position: 'bottom',
+      });
+      return;
+    }
+    showToast({message: 'User created successfully!', position: 'bottom'});
+    const setUser = useUserStore.getState().setUser;
+    setUser({
+      uid: res.uid,
+      email: data?.email,
+      name: data?.name,
+      role: data?.role,
+      ...(data.role === 'doctor' && {
+        specialization: data?.specialization.value,
+      }),
+    });
+    return data.role == 'doctor'
+      ? navigateReset('DoctorNavigator')
+      : navigateReset('PatientNavigator');
   };
+
   return (
     <CustomWrapper keybaordAvoidingView>
       <SimpleHeader>
@@ -66,10 +94,6 @@ const Signup = () => {
                 name="specialization"
                 label="Specialization"
                 required
-                //   onChangeValue={() => {
-                //     setValue('fieldOfPractice', null);
-                //     // setValue('typeOfPractice');
-                //   }}
                 control={control}
                 rules={{required: 'Specialization is required'}}
                 data={TYPEOFSPECIALIZATION}
@@ -92,7 +116,9 @@ const Signup = () => {
           </View>
 
           <CustomButton
-            // loading={isPending}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            isValid={isValid}
             title={'Continue'}
             onPress={handleSubmit(SignupHandler)}
           />

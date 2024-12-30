@@ -5,7 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SelectRole from '../screens/Auth/SelectRole/SelectRole';
 import Login from '../screens/Auth/Login/Login';
 import Signup from '../screens/Auth/Signup/Signup';
-import {useStore} from '../services/store/store';
+import {useUserStore} from '../services/store/userStore';
 import DoctorNavigator from './DoctorNavigator';
 import PatientNavigator from './PatientNavigator';
 import {RootStackNavigationType} from '../utils/types/navigationType';
@@ -15,7 +15,7 @@ import {COLORS} from '../utils/theme';
 const Stack = createNativeStackNavigator<RootStackNavigationType>();
 
 const RootStack = () => {
-  const {user} = useStore();
+  const {user} = useUserStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

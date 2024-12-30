@@ -9,7 +9,7 @@ interface UserStore {
   clearUser: () => void;
 }
 
-export const useStore = create(
+export const useUserStore = create(
   persist<UserStore>(
     (set) => ({
       user: null,

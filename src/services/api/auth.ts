@@ -1,95 +1,54 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { showToast } from '../../utils/helper';
-import {useStore} from '../store/store';
+import { showToast } from '../../utils/helpers';
+import {useUserStore} from '../store/userStore';
 import { navigateReset } from '../../utils/navigation';
 
 export const signupWithFirebase = async (data: any) => {
   try {
     const res = await auth().createUserWithEmailAndPassword(data?.email, data?.password);
-
     await firestore()
-      .collection(data?.role)
-      .doc(res.user.uid)
-      .set(
-        data?.role === 'doctor' ? {
-          email: data?.email,
-          name: data?.name,
-          role: data?.role,
-          specialization: data?.specialization.value,
-        } : {
-          email: data?.email,
-          name: data?.name,
-          role: data?.role,
-        }
-      );
-
-    const setUser = useStore.getState().setUser;
-    setUser({
-      uid: res.user.uid,
-      email: data?.email,
-      name: data?.name,
-      role: data?.role,
-      ...(data.role === 'doctor' && {specialization: data?.specialization.value}),
-    });
-
-    console.log('User created successfully!');
-    showToast({ message: "User created successfully!", position: 'bottom' });
-    
-    return data.role == 'doctor' ? navigateReset('DoctorNavigator') : navigateReset('PatientNavigator')
-
+    .collection("users")
+    .doc(res.user.uid)
+    .set(
+      {
+        email: data?.email,
+        name: data?.name,
+        role: data?.role,
+        ...(data?.role === 'doctor' && { specialization: data?.specialization?.value })
+      }
+    );
+   return {success:true,uid:res.user.uid};
   } catch (error:any) {
-    console.error('Error during signup', error);
-
-    if (error.code === 'auth/email-already-in-use') {
-      showToast({ type: "error", message: "That email address is already in use!", position: 'bottom' });
-    } else if (error.code === 'auth/invalid-email') {
-      showToast({ type: "error", message: "That email address is invalid!", position: 'bottom' });
-    } else if (error.code === 'auth/weak-password') {
-      showToast({ type: "error", message: "Password must be at least 6 characters long", position: 'bottom' });
-    } else {
-      showToast({ type: "error", message: "Something went wrong Oops", position: 'bottom' });
-    }
+    console.error('Error during signup', error.message);
+    return { success: false, error: error.message}; 
   }
 };
 
 export const loginWithFirebase = async (data: any) => {
   try {
-    const loginRes = await firestore().collection(data?.role).where('email', '==', data?.email).get();
-
-    if (loginRes.empty) {
-      showToast({ type: "error", message: "Account Doesn't Exist", position: 'bottom' });
-      return;
-    }
-
     const res = await auth().signInWithEmailAndPassword(data?.email.trim(), data?.password);
-
     const userDoc = await firestore()
-      .collection(data?.role)
+      .collection('users')
       .doc(res.user.uid)
       .get();
-
-    const userData = userDoc.data();
-
-    const setUser = useStore.getState().setUser;
-    setUser({
-      uid: res.user.uid,
-      email: userData?.email,
-      name: userData?.name,
-      role: userData?.role,
-      ...(userData?.specialization && { specialization: userData.specialization }),
-    });
-
-    showToast({ message: "User logged in successfully!", position: 'bottom' });
-    
-    return data.role == 'doctor' ? navigateReset('DoctorNavigator') : navigateReset('PatientNavigator')
-
+    return {success:true, user:userDoc.data(), id: res.user.uid}
   } catch (error:any) {
     console.error('Error during login', error);
-    if (error.code === 'auth/invalid-credential') {
-      showToast({ type: "error", message: "Invalid Credentials", position: 'bottom' });
-    } else {
-      showToast({ type: "error", message: "Something went wrong Oops", position: 'bottom' });
-    }
+    return {success:false,error}
+  }
+};
+
+export const signOutFromFirebase = async () => {
+  try {
+
+    await auth().signOut();
+    const resetUser = useUserStore.getState().setUser;
+    resetUser(null);
+    return navigateReset('SelectRole'); 
+
+  } catch (error: any) {
+    console.error('Error during sign-out', error);
+    showToast({ type: "error", message: "Something went wrong while signing out", position: 'bottom' });
   }
 };

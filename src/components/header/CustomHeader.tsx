@@ -20,6 +20,7 @@ type CustomHeaderProps = {
   iconType?: string;
   onPressBack?: () => void;
   containerStyle?: ViewStyle;
+  onBellPress?: () => void;
 };
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({
@@ -30,6 +31,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   iconType,
   onPressBack,
   containerStyle,
+  onBellPress,
 }) => {
   const {top} = useSafeAreaInsets();
 
@@ -74,7 +76,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
       {icon && (
         <CustomIcon
           style={styles.bellIcon}
-          onPress={() => {}}
+          onPress={onBellPress}
           color={COLORS.white}
           size={RFValue(30)}
           type={'Ionicons'}

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import {MutableRefObject} from 'react';
 import {Day, WeeklySchedule} from './types/componentType';
 import {Timing} from './types/apiResponseType';
-import {TYPEOFPRACTICE} from './constants';
+import {DaysOfWeek, TYPEOFPRACTICE} from './constants';
 import {G} from 'react-native-svg';
 
 export const showToast = ({
@@ -26,6 +26,55 @@ export const showToast = ({
   }
 };
 
+export const getNextDates = (availableDays: any) => {
+  const today = new Date();
+
+  const availableIndices = availableDays.map((day: any) =>
+    DaysOfWeek.indexOf(day),
+  );
+
+  const nextDates = [];
+  for (let i = 1; i <= 7; i++) {
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + i);
+    const dayIndex = futureDate.getDay();
+
+    if (availableIndices.includes(dayIndex)) {
+      nextDates.push({
+        day: DaysOfWeek[dayIndex],
+        date: futureDate.toLocaleDateString('en-US', {day: '2-digit'}),
+      });
+    }
+  }
+  return nextDates;
+};
+
+export const formatTime12Hour = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12; 
+  return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+};
+
+export const generateTimeSlots = (startTime: string, endTime: string) => {
+  const slots = [];
+  let [startHour, startMinute] = startTime.split(':').map(Number);
+  const [endHour, endMinute] = endTime.split(':').map(Number);
+
+  while (startHour < endHour ||(startHour === endHour && startMinute < endMinute)) {
+    const time = `${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`;
+    slots.push(time);
+
+    startMinute += 30;
+    
+    if (startMinute >= 60) {
+      startMinute -= 60;
+      startHour += 1;
+    }
+  }
+  return slots;
+};
+
 export const formatTime = (value: Date, format?: 'hh:mm:ss') => {
   // console.log("formatTime", value);
   try {
@@ -43,6 +92,7 @@ export const formatTime = (value: Date, format?: 'hh:mm:ss') => {
     console.log('ERRRO', error);
   }
 };
+
 export const formatDate = (value: Date, format?: 'yyyy-mm-dd') => {
   try {
     let year = value.getFullYear();
@@ -82,13 +132,13 @@ export const transformAvailabilityDataToArray = (
         return {
           startTime: '00:00',
           endTime: '23:59',
-          day: day.toUpperCase(),
+          day: day,
         } as Timing;
       }
       return {
         startTime: formatTime(startTime),
         endTime: formatTime(endTime),
-        day: day.toUpperCase(),
+        day: day
       } as Timing;
     }),
   );
@@ -119,6 +169,7 @@ export const transformAvailabilityDataToWeeklySchedule = (
     return acc;
   }, {} as WeeklySchedule); // Correctly specify the initial accumulator
 };
+
 export const transformAvailabilityDateToWeeklySchedule = (
   availability: Timing[],
 ): WeeklySchedule => {

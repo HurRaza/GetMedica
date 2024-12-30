@@ -10,16 +10,16 @@ import {DaysOfWeek} from '../../../../utils/constants';
 import AvailabilityListItem from './AvailabilityListItem';
 import {Day, WeeklySchedule} from '../../../../utils/types/componentType';
 import {transformAvailabilityDataToWeeklySchedule} from '../../../../utils/helpers';
-import {useStore} from '../../../../services/store/store';
+import {useUserStore} from '../../../../services/store/userStore';
 
 const AvailabilityDetails: FC<{
   availabilityRef: MutableRefObject<WeeklySchedule>;
 }> = ({availabilityRef}) => {
-  const {user} = useStore();
+  const {user} = useUserStore();
   const userAvailabilityDetails = transformAvailabilityDataToWeeklySchedule(
-    user.timings || [],
+    user?.availability || [],
   );
-  console.log(userAvailabilityDetails);
+
   return (
     <View style={styles.container}>
       <CustomText

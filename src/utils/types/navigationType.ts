@@ -17,6 +17,6 @@ export type RootStackNavigationType = {
   PatientStack:undefined;
   PatientAppointments:undefined;
   DoctorList:undefined;
-  BookAppointments:undefined;
+  BookAppointments:{doctorIndex:number};
 };
 

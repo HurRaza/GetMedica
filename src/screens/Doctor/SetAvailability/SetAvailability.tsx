@@ -3,7 +3,7 @@ import React, {useRef} from 'react';
 import CustomWrapper from '../../../components/wrappers/CustomWrapper';
 import CustomHeader from '../../../components/header/CustomHeader';
 import {IMAGES} from '../../../utils/theme';
-import {useStore} from '../../../services/store/store';
+import {useUserStore} from '../../../services/store/userStore';
 import {CustomButton} from '../../../components/common/CustomButton';
 import {
   heightPercentageToDP,
@@ -12,23 +12,38 @@ import {
 import AvailabilityDetails from './components/AvailabilityDetails';
 import {WeeklySchedule} from '../../../utils/types/componentType';
 import {
+  showToast,
   transformAvailabilityDataToArray,
   transformAvailabilityDataToWeeklySchedule,
 } from '../../../utils/helpers';
-import {availabilityInFirebase} from '../../../services/api/doctor';
+import {setTimeScheduleInFirebase} from '../../../services/api/doctor';
+import {signOutFromFirebase} from '../../../services/api/auth';
 
 const SetAvailability = () => {
-  const {user} = useStore();
-
+  const {user} = useUserStore();
   const availabilityRef = useRef<WeeklySchedule>(
-    transformAvailabilityDataToWeeklySchedule(user?.timings || [], 'date'),
+    transformAvailabilityDataToWeeklySchedule(user?.availability || [], 'date'),
   );
+
   const handlePost = async () => {
-    console.log(availabilityRef.current, 'asdsssss');
     const manipulatedData = transformAvailabilityDataToArray(availabilityRef);
-    console.log('m', manipulatedData);
-    console.log('user', user.uid);
-    await availabilityInFirebase(manipulatedData, user.uid);
+    // console.log(manipulatedData);
+
+    const res = await setTimeScheduleInFirebase(user.uid, manipulatedData);
+    if (!res?.success) {
+      showToast({
+        type: 'error',
+        message: res?.error.message,
+        position: 'bottom',
+      });
+      return;
+    }
+    showToast({message: ' successfully!', position: 'bottom'});
+    const setUser = useUserStore.getState().setUser;
+    setUser({
+      ...user,
+      currentTiming: res.scheduleId,
+    });
   };
   return (
     <CustomWrapper>
@@ -37,6 +52,9 @@ const SetAvailability = () => {
         subtitle="Welcome"
         profilePic={IMAGES.avatar}
         icon={'notifications-outline'}
+        onBellPress={() => {
+          signOutFromFirebase();
+        }}
       />
       <View style={styles.mainContainer}>
         <AvailabilityDetails availabilityRef={availabilityRef} />
