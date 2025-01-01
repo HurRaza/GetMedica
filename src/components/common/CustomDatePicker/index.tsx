@@ -87,7 +87,6 @@ const CustomDatePicker: FC<Props> = ({
 
     return dayjs(roundedValue).format('MM/DD/YYYY');
   };
-  console.log(value);
   return (
     <>
       <View style={[styles.container, containerStyle]}>

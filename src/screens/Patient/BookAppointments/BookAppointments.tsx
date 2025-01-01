@@ -14,7 +14,7 @@ import CustomWrapper from '../../../components/wrappers/CustomWrapper';
 import CustomHeader from '../../../components/header/CustomHeader';
 import {useUserStore} from '../../../services/store/userStore';
 import {COLORS, IMAGES} from '../../../utils/theme';
-import {signOutFromFirebase} from '../../../services/api/auth';
+import {signOutFromFirebase} from '../../../services/firebase/auth';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import DoctorDetails from './components/DoctorDetail';
 import {CustomText} from '../../../components/common/CustomText';
@@ -27,10 +27,13 @@ import {
   formatTime12Hour,
   generateTimeSlots,
   getNextDates,
+  showToast,
 } from '../../../utils/helpers';
 import CustomTextInput from '../../../components/common/CustomTextInput';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {CustomButton} from '../../../components/common/CustomButton';
+import {bookAppointment} from '../../../services/firebase/appointment';
+import {navigate, navigateReset} from '../../../utils/navigation';
 
 const BookAppointments = () => {
   const {params} =
@@ -46,7 +49,7 @@ const BookAppointments = () => {
   } | null>();
   const [selectedTime, setSelectedTime] = useState();
   const [timeSlots, setTimeSlots] = useState([]);
-  const [reasonText, setReasonText] = useState('');
+  const [reasonText, setReasonText] = useState<string>('');
 
   useEffect(() => {
     if (doctorData?.timings) {
@@ -67,8 +70,40 @@ const BookAppointments = () => {
         generateTimeSlots(timing.startTime, timing.endTime),
       );
       setTimeSlots(slots.sort());
+      setSelectedTime(slots[0]);
     }
   }, [selectedDate]);
+
+  const onSubmit = async () => {
+    if (!reasonText.trim()) {
+      return showToast({
+        type: 'error',
+        message: 'Fill all feilds',
+        position: 'bottom',
+      });
+    }
+    const res = await bookAppointment({
+      patientId: user.uid,
+      doctorId: doctorData.id,
+      day: selectedDate?.day,
+      date: selectedDate?.date,
+      time: selectedTime,
+      reason: reasonText,
+    });
+    if (!res.success) {
+      return showToast({
+        type: 'error',
+        message: res.error,
+        position: 'bottom',
+      });
+    }
+    setReasonText('');
+    showToast({
+      message: 'Appointment request has been sent',
+      position: 'bottom',
+    });
+    navigateReset('PatientAppointments');
+  };
 
   return (
     <CustomWrapper keybaordAvoidingView>
@@ -127,7 +162,7 @@ const BookAppointments = () => {
                 ]}
                 onPress={() => setSelectedDate(item)}>
                 <CustomText
-                  children={item.date}
+                  children={item.date.slice(0, 2)}
                   fontSize={'S15'}
                   color={
                     selectedDate?.day == item.day
@@ -194,7 +229,7 @@ const BookAppointments = () => {
           inputContainerStyle={styles.reasonInput}
           textStyle={styles.reasonText}
         />
-        <CustomButton title={'Book Appointment'} onPress={() => {}} />
+        <CustomButton title={'Book Appointment'} onPress={() => onSubmit()} />
       </ScrollView>
     </CustomWrapper>
   );
@@ -236,5 +271,6 @@ const styles = StyleSheet.create({
   },
   reasonText: {
     fontSize: RFValue(14),
+    textAlignVertical: 'top',
   },
 });

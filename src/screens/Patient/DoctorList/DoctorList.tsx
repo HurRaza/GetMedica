@@ -1,32 +1,33 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import CustomWrapper from '../../../components/wrappers/CustomWrapper';
 import CustomHeader from '../../../components/header/CustomHeader';
 import {useUserStore} from '../../../services/store/userStore';
-import {IMAGES} from '../../../utils/theme';
+import {COLORS, IMAGES} from '../../../utils/theme';
 import {CustomText} from '../../../components/common/CustomText';
 import CustomDropDown from '../../../components/common/CustomDropDown';
 import {TYPEOFSPECIALIZATION} from '../../../utils/constants';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import CustomSearchInput from '../../../components/common/CustomSeachInput/CustomSearchInput';
-import {getDoctorsList} from '../../../services/api/doctor';
+import {getDoctorsList} from '../../../services/firebase/doctor';
 import DoctorItemContainer from './components/DoctorItemContainer';
-import {signOutFromFirebase} from '../../../services/api/auth';
+import {signOutFromFirebase} from '../../../services/firebase/auth';
 import {useDoctorsStore} from '../../../services/store/doctorStore';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 
 const DoctorList = () => {
   const {user} = useUserStore();
+  const [loading, setLoading] = useState(true);
   const {doctors, setDoctors, filteredDoctors, setFilteredDoctors} =
     useDoctorsStore();
+  const specializationData = useMemo(() => {
+    return [{value: 'all', label: 'All'}, ...TYPEOFSPECIALIZATION];
+  }, []);
   const [specialization, setSpecialization] = useState<{
     value: string;
     label: string;
-  } | null>(null);
+  }>(specializationData[0]);
   const [searchText, setSearchText] = useState<string>('');
-
-  const specializationData = useMemo(() => {
-    return [{value: 'all', label: 'All'}, ...TYPEOFSPECIALIZATION];
-  },[]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -34,6 +35,7 @@ const DoctorList = () => {
         const doctors: any = await getDoctorsList(specialization);
         setDoctors(doctors);
         setFilteredDoctors(doctors);
+        setLoading(false);
       } catch (error: any) {
         console.error('Error fetching doctors:', error.message);
       }
@@ -64,6 +66,7 @@ const DoctorList = () => {
         }}
       />
       <SecondaryHeader
+        value={specialization}
         title="Doctor Listing"
         dropdownData={specializationData}
         dropdownChangeText={setSpecialization}
@@ -72,11 +75,22 @@ const DoctorList = () => {
         value={searchText}
         onSubmitEditing={handleSearchSubmit}
       />
-      <DoctorItemContainer data={filteredDoctors} />
+
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size={'large'} color={COLORS.primary} />
+        </View>
+      ) : (
+        <DoctorItemContainer data={filteredDoctors} />
+      )}
     </CustomWrapper>
   );
 };
 
 export default DoctorList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  loader: {
+    paddingTop: heightPercentageToDP(2),
+  },
+});

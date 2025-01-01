@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DoctorList from '../screens/Patient/DoctorList/DoctorList';
-import PatientAppointments from '../screens/Patient/PatientAppointments';
+import PatientAppointments from '../screens/Patient/PatientAppointments/PatientAppointments';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BookAppointments from '../screens/Patient/BookAppointments/BookAppointments';
 import {RootStackNavigationType} from '../utils/types/navigationType';

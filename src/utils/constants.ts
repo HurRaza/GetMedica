@@ -57,6 +57,26 @@ export const TYPEOFSPECIALIZATION = [
   },
 ];
 
+export const TYPESOFSTATUS = [
+  {
+    label: 'All',
+    value: 'all',
+  },
+  {
+    label: 'Pending',
+    value: 'pending',
+  },
+  {
+    label: 'Approved',
+    value: 'approved',
+  },
+  {
+    label: 'Rejected',
+    value: 'rejected',
+  },
+];
+
+
 export const TYPEOFPRACTICE = [
   {
     label: 'Small Animal',

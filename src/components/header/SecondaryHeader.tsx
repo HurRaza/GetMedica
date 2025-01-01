@@ -13,14 +13,16 @@ type Props = {
   title: string;
   dropdownData?: DropDownType[];
   dropdownChangeText?: (item: {value: string; label: string}) => void;
+  value: {value: string; label: string};
 };
 
 const SecondaryHeader: React.FC<Props> = ({
   title,
   dropdownData,
   dropdownChangeText,
+  value
 }) => {
-  const [selectedValue, setSelectedValue] = React.useState('Select');
+  
   return (
     <View style={styles.container}>
       <CustomText
@@ -33,7 +35,7 @@ const SecondaryHeader: React.FC<Props> = ({
         <CustomDropDown
           data={dropdownData}
           onChangeItem={dropdownChangeText}
-          value={selectedValue}
+          value={value.value}
           containerStyle={styles.DropdownContainer}
         />
       )}
@@ -51,6 +53,6 @@ const styles = StyleSheet.create({
     paddingVertical: heightPercentageToDP(2),
   },
   DropdownContainer: {
-    width: widthPercentageToDP(36),
+    width: widthPercentageToDP(34),
   },
 });

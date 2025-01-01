@@ -11,10 +11,10 @@ import {CustomButton} from '../../../components/common/CustomButton';
 import CustomRHFTextInput from '../../../components/common/CustomRHFTextInput';
 import {useForm} from 'react-hook-form';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {loginWithFirebase} from '../../../services/api/auth';
+import {loginWithFirebase} from '../../../services/firebase/auth';
 import {showToast} from '../../../utils/helpers';
 import {useUserStore} from '../../../services/store/userStore';
-import {getTimeScheduleFromFirebase} from '../../../services/api/doctor';
+import {getTimeScheduleFromFirebase} from '../../../services/firebase/doctor';
 
 const Login = () => {
   const {params} = useRoute<RouteProp<RootStackNavigationType, 'Login'>>();
@@ -35,7 +35,7 @@ const Login = () => {
       });
       return;
     }
-    console.log(res.id, res.user?.currentTiming);
+    
     const res1 = await getTimeScheduleFromFirebase(
       res.id!,
       res.user?.currentTiming,

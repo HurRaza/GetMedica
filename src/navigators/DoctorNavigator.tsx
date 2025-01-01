@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SetAvailability from '../screens/Doctor/SetAvailability/SetAvailability';
-import DoctorAppointments from '../screens/Doctor/DoctorAppointments';
+import DoctorAppointments from '../screens/Doctor/DoctorAppointments/DoctorAppointments';
 import {RootStackNavigationType} from '../utils/types/navigationType';
 import {CustomIcon} from '../components/common/CustomIcon';
 import {COLORS} from '../utils/theme';

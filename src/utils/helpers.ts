@@ -42,7 +42,7 @@ export const getNextDates = (availableDays: any) => {
     if (availableIndices.includes(dayIndex)) {
       nextDates.push({
         day: DaysOfWeek[dayIndex],
-        date: futureDate.toLocaleDateString('en-US', {day: '2-digit'}),
+        date: futureDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       });
     }
   }
@@ -74,6 +74,24 @@ export const generateTimeSlots = (startTime: string, endTime: string) => {
   }
   return slots;
 };
+
+export const addMinutesToTime = (time: string, minutes: number): string => {
+  const [hours, mins] = time.split(':').map(Number);
+  const date = new Date();
+  date.setHours(hours, mins);
+  date.setMinutes(date.getMinutes() + minutes);
+
+  const endHours = String(date.getHours()).padStart(2, '0');
+  const endMinutes = String(date.getMinutes()).padStart(2, '0');
+  return `${endHours}:${endMinutes}`;
+};
+
+export const getDetailFromRef = async(userRef:any)=>{
+  const doc = await userRef.get()
+  const data = await doc.data()
+  return data;
+}
+
 
 export const formatTime = (value: Date, format?: 'hh:mm:ss') => {
   // console.log("formatTime", value);
@@ -120,9 +138,7 @@ export const transformAvailabilityDataToArray = (
     times.map(({startTime, endTime, is24Hours}: any) => {
       const formatTime = (isoString: any) => {
         const date = new Date(isoString);
-        console.log(
-          `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`,
-        );
+        
         return `${date.getHours()}:${String(date.getMinutes()).padStart(
           2,
           '0',
@@ -165,7 +181,6 @@ export const transformAvailabilityDataToWeeklySchedule = (
           : new Date(dayjs().format('YYYY-MM-DD') + 'T' + curr.endTime),
       is24Hours: curr.startTime === '00:00:00' && curr.endTime === '23:59:00',
     });
-    console.log(acc);
     return acc;
   }, {} as WeeklySchedule); // Correctly specify the initial accumulator
 };
@@ -184,7 +199,6 @@ export const transformAvailabilityDateToWeeklySchedule = (
       endTime: curr.endTime,
       is24Hours: curr.startTime === '00:00:00' && curr.endTime === '23:59:00',
     });
-    console.log(acc);
     return acc;
   }, {} as WeeklySchedule); // Correctly specify the initial accumulator
 };

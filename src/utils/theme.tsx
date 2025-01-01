@@ -13,6 +13,7 @@ export const COLORS = {
   purple: '#9294F2',
   primaryTransparant5: 'rgba(0, 130, 127, 0.05)',
   primaryTransparant10: 'rgba(0, 130, 127, 0.1)',
+  errorRedTransparent10: 'rgba(241, 77, 77, 0.1)',
   errorRed50: '#F14D4D',
   title: '#121212',
   bodytext: '#252525',

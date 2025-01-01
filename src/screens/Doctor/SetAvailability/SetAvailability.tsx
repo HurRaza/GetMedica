@@ -16,8 +16,8 @@ import {
   transformAvailabilityDataToArray,
   transformAvailabilityDataToWeeklySchedule,
 } from '../../../utils/helpers';
-import {setTimeScheduleInFirebase} from '../../../services/api/doctor';
-import {signOutFromFirebase} from '../../../services/api/auth';
+import {setTimeScheduleInFirebase} from '../../../services/firebase/doctor';
+import {signOutFromFirebase} from '../../../services/firebase/auth';
 
 const SetAvailability = () => {
   const {user} = useUserStore();
@@ -27,8 +27,6 @@ const SetAvailability = () => {
 
   const handlePost = async () => {
     const manipulatedData = transformAvailabilityDataToArray(availabilityRef);
-    // console.log(manipulatedData);
-
     const res = await setTimeScheduleInFirebase(user.uid, manipulatedData);
     if (!res?.success) {
       showToast({

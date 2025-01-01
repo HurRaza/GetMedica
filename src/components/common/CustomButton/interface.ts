@@ -1,6 +1,5 @@
 import {ReactNode} from 'react';
 import {TextStyle, ViewStyle} from 'react-native';
-import {View} from 'react-native-reanimated/lib/typescript/Animated';
 
 export interface CustomButtonProps {
   title?: any;
