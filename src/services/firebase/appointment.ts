@@ -129,11 +129,6 @@ export const getAppointmentsbyMonth = async (
       }));
       return appointments;
     } else {
-      showToast({
-        message: 'No Appointments Found',
-        type: 'info',
-        position: 'bottom',
-      });
       return [];
     }
   } catch (error) {

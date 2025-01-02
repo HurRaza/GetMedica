@@ -13,8 +13,6 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {navigate} from '../../../../utils/navigation';
-import {HOSPITAL_HOME_DOCTORS} from '../../../../utils/types/apiResponseType';
-import {getPracticeType} from '../../../../utils/helpers';
 import CustomIconWithText from '../../../../components/common/CustomIconWithText/CustomIconWithText';
 import {CustomText} from '../../../../components/common/CustomText';
 import CustomImage from '../../../../components/common/CustomImage';
@@ -24,10 +22,10 @@ import {DayShortNames} from '../../../../utils/constants';
 type Props = {
   containerStyle?: ViewStyle;
   item: any;
-  index:number
+  index: number;
 };
 
-const CustomDoctor: FC<Props> = ({containerStyle, item,index}) => {
+const CustomDoctor: FC<Props> = ({containerStyle, item, index}) => {
   return (
     <TouchableOpacity
       onPress={() => navigate('BookAppointments', {doctorIndex: index})}
@@ -41,12 +39,17 @@ const CustomDoctor: FC<Props> = ({containerStyle, item,index}) => {
         />
         <View style={{flex: 1}}>
           <CustomText
-            children={item.name.toUpperCase()}
+            children={item.name}
             color={COLORS.bodytext}
             fontSize="S15"
           />
           <CustomText
-            children={item.specialization}
+            children={
+              item.specialization
+                ? item.specialization.charAt(0).toUpperCase() +
+                  item.specialization.slice(1)
+                : ''
+            }
             fontWeight="500"
             color={COLORS.primary}
           />

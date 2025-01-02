@@ -18,18 +18,10 @@ export const setTimeScheduleInFirebase = async (userId:string,availabilityData: 
   try{
     for (const item of availabilityData) {
       if (item.startTime === 'NaN:NaN' || item.endTime === 'NaN:NaN') {
-        return  showToast({
-          message: "Invalid availability: Start time or End time cannot be NaN.",
-          type: 'error',
-          position: 'bottom',
-        });
+        return {success:false,error: "Start time or End time cannot be null."}
       }
-      if(item.startTime > item.endTime){
-        return  showToast({
-          message: "Invalid availability: End Time is invalid.",
-          type: 'error',
-          position: 'bottom',
-        });
+      if(+item.startTime.split(':')[0] > +item.endTime.split(':')[0]){
+        return {success:false,error: "Start time or End Time is invalid."}
       }
     }
 

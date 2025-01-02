@@ -31,7 +31,7 @@ const SetAvailability = () => {
     if (!res?.success) {
       showToast({
         type: 'error',
-        message: res?.error.message,
+        message: res?.error,
         position: 'bottom',
       });
       return;
@@ -41,6 +41,7 @@ const SetAvailability = () => {
     setUser({
       ...user,
       currentTiming: res.scheduleId,
+      availability: manipulatedData,
     });
   };
   return (

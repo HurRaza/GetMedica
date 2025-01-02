@@ -65,7 +65,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
               color={COLORS.NeutralGrey50}
             />
             <CustomText
-              children={title?.toUpperCase()}
+              children={title}
               fontWeight="600"
               fontSize="S20"
               color={COLORS.NeutralGrey90}
