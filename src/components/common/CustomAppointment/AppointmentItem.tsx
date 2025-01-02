@@ -18,39 +18,23 @@ import {CustomText} from '../../../components/common/CustomText';
 import {DayShortNames} from '../../../utils/constants';
 import {CustomButton} from '../../../components/common/CustomButton';
 import {getDetailFromRef} from '../../../utils/helpers';
+import {updateAppointmentStatus} from '../../../services/firebase/appointment';
 
 type Props = {
   containerStyle?: ViewStyle;
   item?: any;
   role: string;
-  handleStatusChange?: (id: string, status: string) => void;
 };
 
-const AppointmentItem: FC<Props> = ({
-  containerStyle,
-  item,
-  role,
-  handleStatusChange,
-}) => {
-  const userRef = role == 'patient' ? item.doctorRef : item.patientRef;
+const AppointmentItem: FC<Props> = ({containerStyle, item, role}) => {
+  const [approved, setApproved] = useState(false);
 
-  const [userData, setUserData] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getDetailFromRef(userRef);
-      setUserData(data);
-    };
-    fetchData();
-  }, [userRef]);
-
-  if (!userData) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    );
-  }
+  const handleStatus = async (id: string, status: string) => {
+    const res = await updateAppointmentStatus(id, status);
+    if (res) {
+      setApproved(true);
+    }
+  };
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -63,50 +47,54 @@ const AppointmentItem: FC<Props> = ({
         />
         <View style={{flex: 1}}>
           <CustomText
-            children={userData?.name}
+            children={item.user.name}
             color={COLORS.bodytext}
             fontSize="S21"
             fontWeight="500"
           />
-          <CustomText
-            children={
-              userData?.specialization
-                ? userData.specialization.charAt(0).toUpperCase() +
-                  userData.specialization.slice(1)
-                : ''
-            }
-            fontWeight="500"
-            fontSize="S14"
-            color={COLORS.primary}
-          />
+          {role == 'patient' && (
+            <CustomText
+              children={
+                item.user?.specialization
+                  ? item.user.specialization.charAt(0).toUpperCase() +
+                    item.user.specialization.slice(1)
+                  : ''
+              }
+              fontWeight="500"
+              fontSize="S14"
+              color={COLORS.primary}
+            />
+          )}
         </View>
 
-        <View
-          style={[
-            styles.typeContainer,
-            item.status === 'pending'
-              ? {backgroundColor: COLORS.NeutralGrey10}
-              : item.status === 'rejected'
-              ? {backgroundColor: COLORS.errorRedTransparent10}
-              : {backgroundColor: COLORS.primaryTransparant5},
-          ]}>
-          <CustomText
-            fontSize="S12"
-            fontWeight="500"
-            children={
-              item.status
-                ? item.status.charAt(0).toUpperCase() + item.status.slice(1)
-                : ''
-            }
-            color={
-              item.status == 'approved'
-                ? COLORS.primary
-                : item.status == 'rejected'
-                ? COLORS.errorRed50
-                : COLORS.NeutralGrey70
-            }
-          />
-        </View>
+        {role == 'patient' && (
+          <View
+            style={[
+              styles.typeContainer,
+              item.status === 'pending'
+                ? {backgroundColor: COLORS.NeutralGrey10}
+                : item.status === 'rejected'
+                ? {backgroundColor: COLORS.errorRedTransparent10}
+                : {backgroundColor: COLORS.primaryTransparant5},
+            ]}>
+            <CustomText
+              fontSize="S12"
+              fontWeight="500"
+              children={
+                item.status
+                  ? item.status.charAt(0).toUpperCase() + item.status.slice(1)
+                  : ''
+              }
+              color={
+                item.status == 'approved'
+                  ? COLORS.primary
+                  : item.status == 'rejected'
+                  ? COLORS.errorRed50
+                  : COLORS.NeutralGrey70
+              }
+            />
+          </View>
+        )}
       </View>
       <View style={styles.bottomContainer}>
         <CustomIconWithText
@@ -141,12 +129,12 @@ const AppointmentItem: FC<Props> = ({
         fontWeight="400"
         textStyle={styles.description}
       />
-      {handleStatusChange && item.status == 'pending' && (
+      {!approved && role == 'doctor' && item.status == 'pending' && (
         <View style={styles.buttonContainer}>
           <CustomButton
             title={'Decline'}
             onPress={() => {
-              handleStatusChange(item.id, 'rejected');
+              handleStatus(item.id, 'rejected');
             }}
             containerStyle={styles.cancelButtonCont}
             textStyle={styles.cancelButton}
@@ -154,7 +142,7 @@ const AppointmentItem: FC<Props> = ({
           <CustomButton
             title={'Confirm'}
             onPress={() => {
-              handleStatusChange(item.id, 'approved');
+              handleStatus(item.id, 'approved');
             }}
             containerStyle={styles.confirmButtonCont}
             textStyle={styles.confirmButton}

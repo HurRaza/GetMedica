@@ -162,7 +162,7 @@ const BookAppointments = () => {
                 ]}
                 onPress={() => setSelectedDate(item)}>
                 <CustomText
-                  children={item.date.slice(0, 2)}
+                  children={item.date.slice(-2)}
                   fontSize={'S15'}
                   color={
                     selectedDate?.day == item.day

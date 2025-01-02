@@ -98,6 +98,54 @@ export const getAppointmentByDoctor = async (
   }
 };
 
+export const getAppointmentsbyMonth = async (
+  id: string,
+  status?: {value: string; label: string},
+  month?: string
+) => {
+  try {
+     let appointmentRef = firestore()
+      .collection('appointments')
+      .where('doctorId', '==', id);
+   
+    if (status && status.value !== 'all') {
+      appointmentRef = appointmentRef.where('status', '==', status.value);
+    }
+
+    if (month) {
+      const startOfMonth = `${month}-01`
+      const endOfMonth = `${month}-31`
+
+      appointmentRef = appointmentRef
+        .where('date', '>=', startOfMonth)
+        .where('date', '<=', endOfMonth);
+    }
+
+    const appointmentDoc = await appointmentRef.get();
+    if (!appointmentDoc.empty) {
+      const appointments = appointmentDoc.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      return appointments;
+    } else {
+      showToast({
+        message: 'No Appointments Found',
+        type: 'info',
+        position: 'bottom',
+      });
+      return [];
+    }
+  } catch (error) {
+    console.error('Error Fetching Appointments:', error);
+    showToast({
+      message: 'Failed to Fetch Appointments.',
+      type: 'error',
+      position: 'bottom',
+    });
+  }
+};
+
 export const updateAppointmentStatus = async (appointmentId:string,status:string)=>{
   try{
     await firestore().collection('appointments').doc(appointmentId).update({
@@ -108,6 +156,7 @@ export const updateAppointmentStatus = async (appointmentId:string,status:string
       message: 'Status Update Successfully.',
       position: 'bottom',
     });
+    return{success:true}
 
   }
   catch(error:any){
@@ -117,5 +166,7 @@ export const updateAppointmentStatus = async (appointmentId:string,status:string
       type: 'error',
       position: 'bottom',
     });
+    return{success:false}
   }
 }
+

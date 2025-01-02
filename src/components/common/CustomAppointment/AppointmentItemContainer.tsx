@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {ReactElement, ReactNode} from 'react';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 
 import {Text} from 'react-native-svg';
@@ -9,22 +9,20 @@ import {useUserStore} from '../../../services/store/userStore';
 
 type Props = {
   data: any[];
-  handleStatusChange?: (id: string, status: string) => void;
+  renderHeader?: ReactElement;
 };
 
-const AppointmentItemContainer: React.FC<Props> = ({
-  data,
-  handleStatusChange,
-}) => {
+const AppointmentItemContainer: React.FC<Props> = ({data, renderHeader}) => {
   const {user} = useUserStore();
 
   return (
     <View style={styles.container}>
       <FlatList
+        ListHeaderComponent={renderHeader}
         data={data}
         keyExtractor={(item: any, index: number) => index.toString()}
         ListEmptyComponent={
-          <View>
+          <View style={{paddingTop: heightPercentageToDP(10)}}>
             <CustomText center children={'No Appointments Avialable'} />
           </View>
         }
@@ -34,7 +32,6 @@ const AppointmentItemContainer: React.FC<Props> = ({
               role={user.role}
               item={item}
               containerStyle={styles.itemContainer}
-              handleStatusChange={handleStatusChange}
             />
           );
         }}

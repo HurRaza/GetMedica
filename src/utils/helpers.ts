@@ -42,7 +42,7 @@ export const getNextDates = (availableDays: any) => {
     if (availableIndices.includes(dayIndex)) {
       nextDates.push({
         day: DaysOfWeek[dayIndex],
-        date: futureDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        date: futureDate.toLocaleDateString('fr-CA'),
       });
     }
   }
@@ -86,12 +86,16 @@ export const addMinutesToTime = (time: string, minutes: number): string => {
   return `${endHours}:${endMinutes}`;
 };
 
+export const convertDateToUSLocale =(date: any) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 export const getDetailFromRef = async(userRef:any)=>{
   const doc = await userRef.get()
   const data = await doc.data()
   return data;
 }
-
 
 export const formatTime = (value: Date, format?: 'hh:mm:ss') => {
   // console.log("formatTime", value);
@@ -203,78 +207,78 @@ export const transformAvailabilityDateToWeeklySchedule = (
   }, {} as WeeklySchedule); // Correctly specify the initial accumulator
 };
 
-export const getPracticeType = (
-  type: 'smallAnimal' | 'largeAnimal' | 'mixedAnimal' | 'exotic',
-) => {
-  const practiceType = {
-    smallAnimal: 'Small Animal',
-    largeAnimal: 'Large Animal',
-    mixedAnimal: 'Mixed Animal',
-    exotic: 'Exotics',
-  };
+// export const getPracticeType = (
+//   type: 'smallAnimal' | 'largeAnimal' | 'mixedAnimal' | 'exotic',
+// ) => {
+//   const practiceType = {
+//     smallAnimal: 'Small Animal',
+//     largeAnimal: 'Large Animal',
+//     mixedAnimal: 'Mixed Animal',
+//     exotic: 'Exotics',
+//   };
 
-  return practiceType[type] || type;
-};
+//   return practiceType[type] || type;
+// };
 
-export const getFieldPracticeType = (
-  type:
-    | 'generalPractice'
-    | 'emergency'
-    | 'specialist'
-    | 'production'
-    | 'equine',
-) => {
-  const fieldOfPracticeType = {
-    generalPractice: 'General Practice',
-    emergency: 'Emergency and Critical Care',
-    specialist: 'Specialist',
-    production: 'Production',
-    equine: 'Equine',
-  };
+// export const getFieldPracticeType = (
+//   type:
+//     | 'generalPractice'
+//     | 'emergency'
+//     | 'specialist'
+//     | 'production'
+//     | 'equine',
+// ) => {
+//   const fieldOfPracticeType = {
+//     generalPractice: 'General Practice',
+//     emergency: 'Emergency and Critical Care',
+//     specialist: 'Specialist',
+//     production: 'Production',
+//     equine: 'Equine',
+//   };
 
-  return fieldOfPracticeType[type] || type;
-};
+//   return fieldOfPracticeType[type] || type;
+// };
 
-export const cleanObject = (obj: {}) => {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => value != null),
-  );
-};
+// export const cleanObject = (obj: {}) => {
+//   return Object.fromEntries(
+//     Object.entries(obj).filter(([_, value]) => value != null),
+//   );
+// };
 
-export const transformArrayIntoMonthlyObjectVetNurse = (
-  array: {
-    isApplied: boolean;
-    isCompleted: boolean;
-    isHired: boolean;
-    isInvited: boolean;
-    date: string;
-  }[],
-) => {
-  return array.reduce((acc: any, item) => {
-    acc[dayjs(item.date).format('YYYY-MM-DD')] = {
-      isApplied: item?.isApplied,
-      isCompleted: item?.isCompleted,
-      isHired: item?.isHired,
-      isInvited: item?.isInvited,
-    };
-    return acc;
-  }, {});
-};
+// export const transformArrayIntoMonthlyObjectVetNurse = (
+//   array: {
+//     isApplied: boolean;
+//     isCompleted: boolean;
+//     isHired: boolean;
+//     isInvited: boolean;
+//     date: string;
+//   }[],
+// ) => {
+//   return array.reduce((acc: any, item) => {
+//     acc[dayjs(item.date).format('YYYY-MM-DD')] = {
+//       isApplied: item?.isApplied,
+//       isCompleted: item?.isCompleted,
+//       isHired: item?.isHired,
+//       isInvited: item?.isInvited,
+//     };
+//     return acc;
+//   }, {});
+// };
 
-export const transformArrayIntoMonthlyObjectHospital = (
-  array: {
-    isCompleted: boolean;
-    inProgress: boolean;
-    upcoming: boolean;
-    date: string;
-  }[],
-) => {
-  return array.reduce((acc: any, item) => {
-    acc[dayjs(item.date).format('YYYY-MM-DD')] = {
-      isApplied: item?.upcoming,
-      isCompleted: item?.isCompleted,
-      isHired: item?.inProgress,
-    };
-    return acc;
-  }, {});
-};
+// export const transformArrayIntoMonthlyObjectHospital = (
+//   array: {
+//     isCompleted: boolean;
+//     inProgress: boolean;
+//     upcoming: boolean;
+//     date: string;
+//   }[],
+// ) => {
+//   return array.reduce((acc: any, item) => {
+//     acc[dayjs(item.date).format('YYYY-MM-DD')] = {
+//       isApplied: item?.upcoming,
+//       isCompleted: item?.isCompleted,
+//       isHired: item?.inProgress,
+//     };
+//     return acc;
+//   }, {});
+// };

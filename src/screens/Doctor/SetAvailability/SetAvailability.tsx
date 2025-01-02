@@ -36,7 +36,7 @@ const SetAvailability = () => {
       });
       return;
     }
-    showToast({message: ' successfully!', position: 'bottom'});
+    showToast({message: 'Availability Time Updated!', position: 'bottom'});
     const setUser = useUserStore.getState().setUser;
     setUser({
       ...user,
